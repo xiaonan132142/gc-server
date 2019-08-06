@@ -1,0 +1,35 @@
+---
+root: true
+parser: babel-eslint
+parserOptions:
+  sourceType: module
+env:
+  browser: true
+  node: true
+extends:
+  - airbnb-base
+globals:
+  __static: true
+rules:
+  # eqeqeq: 1
+  global-require: 0
+  import/no-unresolved: 0
+  import/prefer-default-export: 0
+  no-param-reassign: 0
+  no-shadow: 0
+  no-multi-assign: 0
+  no-console: 1
+  no-debugger: 1
+  no-underscore-dangle: 1
+  no-script-url: 1
+  no-plusplus: 1
+  no-useless-constructor: 0
+  class-methods-use-this: 0
+  no-unused-vars: 1
+  max-len:
+    - error
+    - code: 100
+      ignoreComments: true
+      ignoreUrls: true
+      ignoreStrings: true
+      ignoreTemplateLiterals: true

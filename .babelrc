@@ -1,0 +1,26 @@
+{
+  "presets": [
+    [
+      "env",
+      {
+        "targets": {
+          "browsers": [
+            "last 2 Chrome versions",
+            "ie 11"
+          ]
+        },
+        "modules": false,
+        "useBuiltIns": true,
+        "debug": false
+      }
+    ]
+  ],
+  "plugins": [
+    "lodash",
+    "syntax-dynamic-import",
+    "dynamic-import-node",
+    "transform-object-rest-spread",
+    "transform-remove-strict-mode",
+    "transform-runtime"
+  ]
+}
