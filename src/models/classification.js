@@ -9,6 +9,7 @@ var ClassificationSchema = new Schema({
       'default': shortid.generate,
     },
     userId: String,
+    number: String,
     title: String,
     contents: [{
       desc: String,
@@ -17,15 +18,13 @@ var ClassificationSchema = new Schema({
     }],
     published: { type: Boolean, default: true },
     available: { type: Boolean, default: true },
+
     free: { type: Boolean, default: true },
-    price: Number,
-    score: Number,
-    readTimes: Number,
-    shareTimes: Number,
-  },
-  {
-    toObject: { virtuals: true },
-    toJSON: { virtuals: true },
+    price: { type: Number, default: 0 },
+    score: { type: Number, default: 0 },
+    commentCount: { type: Number, default: 0 },
+    readTimes: { type: Number, default: 0 },
+    shareTimes: { type: Number, default: 0 },
   },
   {
     timestamps: true,

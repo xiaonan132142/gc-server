@@ -29,7 +29,7 @@ ReadSchema.virtual('user', {
 ReadSchema.virtual('classification', {
   ref: 'Classification',
   localField: 'classificationId',
-  foreignField: 'classificationId',
+  foreignField: '_id',
   justOne: true, // for many-to-1 relationships
 });
 

@@ -1,6 +1,7 @@
 const _ = require('lodash');
 const settings = require('../../config/settings');
 const CommentModel = require('../models').Comment;
+const ClassificationModel = require('../models').Classification;
 
 class Comment {
   constructor() {
@@ -56,6 +57,9 @@ class Comment {
         comment = new CommentModel(commentObj);
         await comment.save();
       }
+
+      await ClassificationModel.findOneAndUpdate({ _id: classificationId }, { $inc: { commentCount: 1 } }, { upsert: true });
+
       res.send({
         state: 'success',
         id: comment._id,

@@ -21,24 +21,34 @@ class Classification {
         query.title = { $regex: keyword, $options: 'i' };
       }
 
-      const classifications = await ClassificationModel.find(query, {
-        'userId': 1,
-        'title': 1,
-        'contents': 1,
-        'published': 1,
-        'available': 1,
-        'free': 1,
-        'price': 1,
-        'score': 1,
-        'readTimes': 1,
-        'shareTimes': 1,
-      }).sort({
-        score: -1,
-      }).skip(Number(pageSize) * (Number(current) - 1)).limit(Number(pageSize)).populate([
+      let classifications = await ClassificationModel.aggregate([
         {
-          path: 'userId',
-          select: 'username avatar accountName phoneNum',
-        }]).exec();
+          $match: query,
+        },
+        {
+          $lookup: {
+            from: 'users', localField: 'userId', foreignField: 'userId', as: 'user',
+          },
+        },
+        {
+          $project: {
+            userId: 1,
+            title: 1,
+            contents: 1,
+            published: 1,
+            free: 1,
+            price: 1,
+            score: 1,
+            commentCount: 1,
+            createdAt: 1,
+            'user.avatar': 1,
+            'user.accountName': 1,
+          },
+        },
+        { $limit: Number(pageSize) },
+        { $skip: Number(pageSize) * (Number(current) - 1) },
+        { $sort: { score: -1 } },
+      ]);
 
       const totalItems = await ClassificationModel.countDocuments(query);
 
@@ -50,6 +60,53 @@ class Classification {
           current: Number(current) || 1,
           pageSize: Number(pageSize) || 10,
         },
+      });
+    } catch (err) {
+      res.status(500);
+      res.send({
+        state: 'error',
+        stack: err && err.stack,
+        message: '获取classifications失败',
+      });
+    }
+  }
+
+  async getTodayRecommend(req, res, next) {
+    try {
+      let query = { available: true };
+
+      let classifications = await ClassificationModel.aggregate([
+        {
+          $match: query,
+        },
+        {
+          $lookup: {
+            from: 'users', localField: 'userId', foreignField: 'userId', as: 'user',
+          },
+        },
+        {
+          $project: {
+            userId: 1,
+            title: 1,
+            contents: 1,
+            published: 1,
+            free: 1,
+            price: 1,
+            score: 1,
+            commentCount: 1,
+            createdAt: 1,
+            'user.avatar': 1,
+            'user.accountName': 1,
+          },
+        },
+        { $limit: 5 },
+        { $skip: 0 },
+        { $sort: { score: -1 } },
+      ]);
+
+      res.send({
+        state: 'success',
+        data: classifications,
       });
     } catch (err) {
       res.status(500);

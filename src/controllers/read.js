@@ -20,19 +20,41 @@ class Read {
         return;
       }
 
-      const reads = await ReadModel.find({ userId }, {
-        'userId': 1,
-        'classificationId': 1,
-        'readTimes': 1,
-      }).sort({
-        createdAt: -1,
-      }).skip(Number(pageSize) * (Number(current) - 1)).limit(Number(pageSize)).populate([
-        {
-          path: 'classificationId',
-          select: 'title free score',
-        }]).exec();
+      let query = {userId};
 
-      const totalItems = await ReadModel.countDocuments({ userId });
+      let reads = await ReadModel.aggregate([
+        {
+          $match: query,
+        },
+        {
+          $lookup: {
+            from: 'classifications',
+            localField: 'classificationId',
+            foreignField: '_id',
+            as: 'classification',
+          },
+        },
+        {
+          $project: {
+            userId: 1,
+            classificationId: 1,
+            readTimes: 1,
+            'classification.title': 1,
+            'classification.contents': 1,
+            'classification.published': 1,
+            'classification.free': 1,
+            'classification.price': 1,
+            'classification.score': 1,
+            'classification.commentCount': 1,
+            'classification.createdAt': 1,
+          },
+        },
+        { $limit: Number(pageSize) },
+        { $skip: Number(pageSize) * (Number(current) - 1) },
+        { $sort: { createdAt: -1 } },
+      ]);
+
+      const totalItems = await ReadModel.countDocuments(query);
 
       res.send({
         state: 'success',
@@ -55,8 +77,8 @@ class Read {
 
   async addOne(req, res, next) {
 
-    let userId = req.query.userId;
-    let classificationId = req.query.classificationId;
+    let userId = req.body.userId;
+    let classificationId = req.body.classificationId;
 
     if (!userId || userId == 'undefined') {
       res.send({
@@ -87,12 +109,6 @@ class Read {
         state: 'success',
         id: newRead._id,
       });
-
-      res.send({
-        state: 'success',
-        message: '',
-      });
-
     } catch (err) {
       res.status(500);
       res.send({

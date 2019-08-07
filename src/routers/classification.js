@@ -107,6 +107,24 @@ const {
  */
 router.get('/getAll', Classification.getAll);
 
+
+/**
+ * @swagger
+ * /classification/getTodayRecommend:
+ *   get:
+ *     tags:
+ *       - Classifications
+ *     description: Returns classifications list
+ *     produces:
+ *       - application/json
+ *     responses:
+ *       200:
+ *         description: An Object contains array of awards
+ *         schema:
+ *           $ref: '#/definitions/Classification'
+ */
+router.get('/getTodayRecommend', Classification.getTodayRecommend);
+
 /**
  * @swagger
  * /classification/getPublishedByUser:

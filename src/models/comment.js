@@ -35,7 +35,7 @@ CommentSchema.virtual('user', {
 CommentSchema.virtual('classification', {
   ref: 'Classification',
   localField: 'classificationId',
-  foreignField: 'classificationId',
+  foreignField: '_id',
   justOne: true, // for many-to-1 relationships
 });
 

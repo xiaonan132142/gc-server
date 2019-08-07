@@ -7,37 +7,25 @@ const {
 /**
  * @swagger
  * definitions:
- *   Rank:
+ *   Read:
  *     properties:
  *       _id:
  *         type: string
  *       userId:
  *         type: string
- *       username:
+ *       classificationId:
  *         type: string
- *       avatar:
- *         type: string
- *       winTimes:
- *         type: integer
- *       predictTimes:
- *         type: integer
- *       winRatio:
- *         type: integer
- *       winRank:
- *         type: integer
- *       predictRank:
- *         type: integer
- *       awardTimes:
- *         type: integer
  */
 
 /**
  * @swagger
  * definitions:
- *   AllRank:
+ *   ReadCreateDTO:
  *     properties:
- *       active:
- *          $ref: '#/definitions/Rank'
+ *       userId:
+ *         type: string
+ *       classificationId:
+ *         type: string
  */
 
 /**
@@ -71,24 +59,24 @@ router.get('/getAllByUserId', Read.getAllByUserId);
 
 /**
  * @swagger
- * /rank/personal:
- *   get:
+ * /read/add:
+ *   post:
  *     tags:
- *       - Ranks
- *     description: Returns one statistics
- *     parameters:
- *       - name: userId
- *         in: query
- *         required: true
- *         type: string
+ *       - Reads
+ *     description: Publish a read
  *     produces:
  *       - application/json
+ *     parameters:
+ *       - name: read
+ *         description: Read object
+ *         in: body
+ *         required: true
+ *         schema:
+ *           $ref: '#/definitions/ReadCreateDTO'
  *     responses:
  *       200:
- *         description: An Object contains one statistics
- *         schema:
- *           $ref: '#/definitions/Rank'
+ *         description: Successfully created
  */
-router.get('/add', Read.addOne);
+router.post('/add', Read.addOne);
 
 module.exports = router;
