@@ -93,6 +93,10 @@ const {
  *         in: query
  *         required: true
  *         type: string
+ *       - name: readerId
+ *         in: query
+ *         required: false
+ *         type: string
  *       - name: current
  *         in: query
  *         type: integer
@@ -117,6 +121,11 @@ router.get('/getAll', Classification.getAll);
  *     description: Returns classifications list
  *     produces:
  *       - application/json
+ *     parameters:
+ *       - name: readerId
+ *         in: query
+ *         required: false
+ *         type: string
  *     responses:
  *       200:
  *         description: An Object contains array of awards
@@ -153,6 +162,28 @@ router.get('/getTodayRecommend', Classification.getTodayRecommend);
  */
 router.get('/getPublishedByUser', Classification.getAllByUserId);
 
+
+/**
+ * @swagger
+ * /classification/getById:
+ *   get:
+ *     tags:
+ *       - Classifications
+ *     description: Returns one classification
+ *     produces:
+ *       - application/json
+ *     parameters:
+ *       - name: id
+ *         in: query
+ *         required: true
+ *         type: string
+ *     responses:
+ *       200:
+ *         description: An Object classification
+ *         schema:
+ *           $ref: '#/definitions/Classification'
+ */
+router.get('/getById', Classification.getById);
 
 /**
  * @swagger

@@ -1,5 +1,6 @@
 const _ = require('lodash');
 const ReadModel = require('../models').Read;
+const ClassificationModel = require('../models').Classification;
 
 class Read {
   constructor() {
@@ -20,45 +21,49 @@ class Read {
         return;
       }
 
-      let query = {userId};
+      let readIdRes = await ReadModel.find({ userId }, { classificationId: 1 }).sort({
+        createdAt: -1,
+      });
 
-      let reads = await ReadModel.aggregate([
+      let readIds = readIdRes.map(r => {
+        return r.classificationId;
+      });
+
+      let query = { available: true, _id: { $in: readIds } };
+      let classifications = await ClassificationModel.aggregate([
         {
           $match: query,
         },
         {
           $lookup: {
-            from: 'classifications',
-            localField: 'classificationId',
-            foreignField: '_id',
-            as: 'classification',
+            from: 'users', localField: 'userId', foreignField: 'userId', as: 'user',
           },
         },
         {
           $project: {
             userId: 1,
-            classificationId: 1,
-            readTimes: 1,
-            'classification.title': 1,
-            'classification.contents': 1,
-            'classification.published': 1,
-            'classification.free': 1,
-            'classification.price': 1,
-            'classification.score': 1,
-            'classification.commentCount': 1,
-            'classification.createdAt': 1,
+            title: 1,
+            contents: 1,
+            published: 1,
+            free: 1,
+            price: 1,
+            score: 1,
+            commentCount: 1,
+            createdAt: 1,
+            'user.avatar': 1,
+            'user.accountName': 1,
           },
         },
         { $limit: Number(pageSize) },
         { $skip: Number(pageSize) * (Number(current) - 1) },
-        { $sort: { createdAt: -1 } },
+        { $sort: { score: -1 } },
       ]);
 
-      const totalItems = await ReadModel.countDocuments(query);
+      const totalItems = await ClassificationModel.countDocuments(query);
 
       res.send({
         state: 'success',
-        data: reads,
+        data: classifications,
         pagination: {
           totalItems,
           current: Number(current) || 1,
