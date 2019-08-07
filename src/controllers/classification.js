@@ -283,6 +283,7 @@ class Classification {
           $project: {
             attitude: 1,
             contents: 1,
+            'user.userId': 1,
             'user.accountName': 1,
             'user.avatar': 1,
             'user.username': 1,
