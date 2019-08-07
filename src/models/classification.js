@@ -21,7 +21,8 @@ var ClassificationSchema = new Schema({
 
     free: { type: Boolean, default: true },
     price: { type: Number, default: 0 },
-    score: { type: Number, default: 0 },
+    upCount: { type: Number, default: 0 },
+    downCount: { type: Number, default: 0 },
     commentCount: { type: Number, default: 0 },
     readTimes: { type: Number, default: 0 },
     shareTimes: { type: Number, default: 0 },

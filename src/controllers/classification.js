@@ -41,7 +41,8 @@ class Classification {
             published: 1,
             free: 1,
             price: 1,
-            score: 1,
+            upCount: 1,
+            downCount: 1,
             commentCount: 1,
             createdAt: 1,
             'user.avatar': 1,
@@ -50,7 +51,7 @@ class Classification {
         },
         { $limit: Number(pageSize) },
         { $skip: Number(pageSize) * (Number(current) - 1) },
-        { $sort: { score: -1 } },
+        { $sort: { upCount: -1, downCount: 1 } },
       ]);
 
       const totalItems = await ClassificationModel.countDocuments(query);
@@ -113,7 +114,8 @@ class Classification {
             published: 1,
             free: 1,
             price: 1,
-            score: 1,
+            upCount: 1,
+            downCount: 1,
             commentCount: 1,
             createdAt: 1,
             'user.avatar': 1,
@@ -122,7 +124,7 @@ class Classification {
         },
         { $limit: 5 },
         { $skip: 0 },
-        { $sort: { score: -1 } },
+        { $sort: { upCount: -1, downCount: 1} },
       ]);
 
       if (readerId) {
@@ -190,7 +192,8 @@ class Classification {
             published: 1,
             free: 1,
             price: 1,
-            score: 1,
+            upCount: 1,
+            downCount: 1,
             commentCount: 1,
             createdAt: 1,
             'user.avatar': 1,
@@ -199,7 +202,7 @@ class Classification {
         },
         { $limit: Number(pageSize) },
         { $skip: Number(pageSize) * (Number(current) - 1) },
-        { $sort: { score: -1 } },
+        { $sort: { upCount: -1, downCount: 1 } },
       ]);
 
       const totalItems = await ClassificationModel.countDocuments(query);
@@ -236,10 +239,62 @@ class Classification {
       }
 
       let query = { available: true, _id };
-      let classification = await ClassificationModel.findOne(query);
+      let classification = await ClassificationModel.aggregate([
+        {
+          $match: query,
+        },
+        {
+          $lookup: {
+            from: 'users', localField: 'userId', foreignField: 'userId', as: 'user',
+          },
+        },
+        {
+          $project: {
+            userId: 1,
+            title: 1,
+            contents: 1,
+            published: 1,
+            free: 1,
+            price: 1,
+            upCount: 1,
+            downCount: 1,
+            commentCount: 1,
+            createdAt: 1,
+            'user.accountName': 1,
+            'user.avatar': 1,
+            'user.username': 1,
+          },
+        },
+      ]);
 
-      let comments = await CommentModel.find({ classificationId: classification._id });
-      classification = Object.assign(classification._doc, { comments });
+      classification = Object.assign(classification[0], { user: classification[0].user[0] });
+
+      let query2 = { classificationId: classification._id };
+      let comments = await CommentModel.aggregate([
+        {
+          $match: query2,
+        },
+        {
+          $lookup: {
+            from: 'users', localField: 'userId', foreignField: 'userId', as: 'user',
+          },
+        },
+        {
+          $project: {
+            attitude: 1,
+            contents: 1,
+            'user.accountName': 1,
+            'user.avatar': 1,
+            'user.username': 1,
+          },
+        },
+      ]);
+
+      comments = comments.map(c => {
+        return Object.assign(c, { user: c.user[0] });
+      });
+
+      classification = Object.assign(classification, { comments });
 
       res.send({
         state: 'success',

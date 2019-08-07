@@ -47,7 +47,8 @@ class Read {
             published: 1,
             free: 1,
             price: 1,
-            score: 1,
+            upCount: 1,
+            downCount: 1,
             commentCount: 1,
             createdAt: 1,
             'user.avatar': 1,
@@ -56,7 +57,7 @@ class Read {
         },
         { $limit: Number(pageSize) },
         { $skip: Number(pageSize) * (Number(current) - 1) },
-        { $sort: { score: -1 } },
+        { $sort: { upCount: -1, downCount: 1 } },
       ]);
 
       const totalItems = await ClassificationModel.countDocuments(query);

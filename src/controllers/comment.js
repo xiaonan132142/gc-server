@@ -109,6 +109,12 @@ class Comment {
 
     try {
       await CommentModel.findOneAndUpdate({ userId, classificationId }, { attitude }, { upsert: true });
+      if (attitude === '1') {
+        await ClassificationModel.findOneAndUpdate({ _id: classificationId }, { $inc: { upCount: 1 } }, { upsert: true });
+      } else {
+        await ClassificationModel.findOneAndUpdate({ _id: classificationId }, { $inc: { downCount: 1 } }, { upsert: true });
+      }
+
       res.send({
         state: 'success',
         message: '',
