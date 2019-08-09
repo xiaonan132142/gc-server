@@ -7,7 +7,7 @@ const pass = 'Ultrain721';
 const dbname = 'gc';
 
 module.exports = {
-  serverPort: 8082,
+  serverPort: 8083,
 
   // 数据库配置
   DB_URL: 'mongodb://root:' + pass + '@' + mongoHost + ':27017/' + dbname,
