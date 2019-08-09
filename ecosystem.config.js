@@ -6,14 +6,14 @@ module.exports = {
     apps: [
         // First application
         {
-            name: 'gbt-server',
+            name: 'gc-server',
             script: 'start.js',
             env: {
-                "PORT": 6666,
+                "PORT": 8083,
                 "NODE_ENV": "development"
             },
             env_production: {
-                "PORT": 6666,
+                "PORT": 8083,
                 "NODE_ENV": "production",
             }
         },
