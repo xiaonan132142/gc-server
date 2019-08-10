@@ -1,5 +1,10 @@
 const express = require('express');
 const router = express.Router();
+const fs = require('fs');
+const path = require('path');
+const multer = require('multer');
+var upload = multer({ dest: '../public' });
+
 const {
   Classification: Classification,
 } = require('../controllers');
@@ -228,5 +233,32 @@ router.post('/publish', Classification.addOne);
  *         description: Successfully updated
  */
 router.post('/takeOff', Classification.takeOff);
+
+router.post('/upload', upload.any(), function(req, res, next) {
+  if (req.files && req.files.length > 0) {
+    console.log(req.body, 'Body');
+    console.log(req.files, 'files');
+
+    const img = req.files[0];
+    const newImgName = new Date().getTime() + path.extname(img.originalname);
+
+    fs.rename(img.path, newImgName, function(err) {
+      if (err) {
+        res.status(500);
+        res.send({
+          state: 'error',
+          stack: err && err.stack,
+        });
+        return;
+      }
+    });
+
+
+    res.send({ state: 'success', filePath: path.join('img', newImgName) });
+  } else {
+    res.send({ state: 'error' });
+  }
+
+});
 
 module.exports = router;
