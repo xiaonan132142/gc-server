@@ -37,7 +37,9 @@ class Classification {
           $project: {
             userId: 1,
             title: 1,
-            contents: 1,
+            desc: 1,
+            sort: 1,
+            image: 1,
             published: 1,
             free: 1,
             price: 1,
@@ -110,7 +112,9 @@ class Classification {
           $project: {
             userId: 1,
             title: 1,
-            contents: 1,
+            desc: 1,
+            sort: 1,
+            image: 1,
             published: 1,
             free: 1,
             price: 1,
@@ -122,9 +126,9 @@ class Classification {
             'user.accountName': 1,
           },
         },
-        { $limit: 5 },
+        { $sort: { upCount: -1 } },
         { $skip: 0 },
-        { $sort: { upCount: -1, downCount: 1} },
+        { $limit: 2 },
       ]);
 
       if (readerId) {
@@ -188,7 +192,9 @@ class Classification {
           $project: {
             userId: 1,
             title: 1,
-            contents: 1,
+            desc: 1,
+            sort: 1,
+            image: 1,
             published: 1,
             free: 1,
             price: 1,
@@ -252,7 +258,9 @@ class Classification {
           $project: {
             userId: 1,
             title: 1,
-            contents: 1,
+            desc: 1,
+            sort: 1,
+            image: 1,
             published: 1,
             free: 1,
             price: 1,
@@ -313,8 +321,12 @@ class Classification {
 
   async addOne(req, res, next) {
     const userId = req.body.userId;
+
     const title = req.body.title;
-    const contents = req.body.contents;
+    const desc = req.body.desc;
+    const image = req.body.image;
+    const sort = req.body.sort;
+
     const free = req.body.free;
     const price = req.body.price;
 
@@ -329,8 +341,11 @@ class Classification {
     try {
       const classificationObj = {
         userId,
+
         title,
-        contents,
+        desc,
+        image,
+        sort,
         free,
         price,
       };

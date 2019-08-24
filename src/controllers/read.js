@@ -43,7 +43,9 @@ class Read {
           $project: {
             userId: 1,
             title: 1,
-            contents: 1,
+            desc: 1,
+            sort: 1,
+            image: 1,
             published: 1,
             free: 1,
             price: 1,

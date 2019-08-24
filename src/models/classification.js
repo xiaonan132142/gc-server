@@ -9,13 +9,12 @@ var ClassificationSchema = new Schema({
       'default': shortid.generate,
     },
     userId: String,
-    number: String,
+
     title: String,
-    contents: [{
-      desc: String,
-      image: String,
-      sort: String,
-    }],
+    desc: String,
+    sort: String,
+    image: String,
+
     published: { type: Boolean, default: true },
     available: { type: Boolean, default: true },
 
