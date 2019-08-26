@@ -1,9 +1,9 @@
 const path = require('path');
 const logPath = path.join(__dirname, '../logs');
 const isProd = process.env.NODE_ENV === 'production';
-const mongoHost = isProd ? '127.0.0.1' : '13.113.76.217';
+const mongoHost = isProd ? '127.0.0.1' : '127.0.0.1';
 const redisHost = isProd ? '127.0.0.1' : '127.0.0.1';
-const pass = 'Ultrain721';
+const pass = '';
 const dbname = 'gc';
 
 module.exports = {
